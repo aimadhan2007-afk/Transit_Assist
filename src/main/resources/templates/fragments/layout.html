@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title} + ' — TransitAssist'">TransitAssist</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" th:href="@{/css/transitassist.css}">
+  <script th:src="@{/js/transitassist.js}" defer></script>
+</head>
+<body>
+
+  <!-- Delegated navbar to prevent any tag name collision -->
+  <div th:fragment="navbar" th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <!-- Delegated alerts -->
+  <div th:fragment="alerts" th:replace="~{fragments/alerts :: alerts}"></div>
+
+  <!-- Delegated footer -->
+  <div th:fragment="footer" th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

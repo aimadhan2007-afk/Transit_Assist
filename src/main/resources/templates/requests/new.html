@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Request Transit Assistance')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 720px;">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <div class="card glass-panel" style="padding: 2.5rem; border-top: 4px solid var(--primary); box-shadow: var(--shadow-md);">
+        <div style="margin-bottom: 2rem;">
+          <a th:href="@{/dashboard}" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 0.85rem;">
+            ← Return to Dashboard
+          </a>
+          <h2>Schedule Transit Assistance</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.35rem;">
+            Provide your trip details so campus staff coordinators can match a verified assistant without delay.
+          </p>
+        </div>
+
+        <form th:action="@{/requests/new}" th:object="${requestDTO}" method="post">
+          <!-- Interactive Quick Choice Cards for Assistance Type -->
+          <div class="form-group">
+            <label class="form-label">Type of Assistance *</label>
+            <div class="assistance-type-grid">
+              <div class="assistance-type-card" data-value="WHEELCHAIR_ASSISTANCE">
+                <div class="type-icon">🦽</div>
+                <div class="type-title">Wheelchair Support</div>
+              </div>
+              <div class="assistance-type-card" data-value="ESCORT_SUPPORT">
+                <div class="type-icon">🤝</div>
+                <div class="type-title">Escort Support</div>
+              </div>
+              <div class="assistance-type-card" data-value="SHUTTLE_BOARDING">
+                <div class="type-icon">🚐</div>
+                <div class="type-title">Shuttle Boarding</div>
+              </div>
+              <div class="assistance-type-card" data-value="CAMPUS_CART">
+                <div class="type-icon">🛺</div>
+                <div class="type-title">Campus Cart</div>
+              </div>
+            </div>
+
+            <!-- Standard Accessible Dropdown (synced automatically with cards) -->
+            <select id="assistanceType" th:field="*{assistanceType}" class="form-select" required>
+              <option value="" disabled selected>-- Select Type of Assistance --</option>
+              <option th:each="type : ${assistanceTypes}" 
+                      th:value="${type.name()}" 
+                      th:text="${type.displayName}">Wheelchair Assistance</option>
+            </select>
+            <div th:if="${#fields.hasErrors('assistanceType')}" th:errors="*{assistanceType}" class="text-danger"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="pickupPoint" class="form-label">Pickup Point / Campus Location *</label>
+            <input type="text" id="pickupPoint" th:field="*{pickupPoint}" class="form-control" 
+                   placeholder="e.g. Main Hostel Block B, Central Library, Science Block Gate 2" required>
+            <small class="form-text">Specify building name, gate, or recognizable landmark.</small>
+            <div th:if="${#fields.hasErrors('pickupPoint')}" th:errors="*{pickupPoint}" class="text-danger"></div>
+          </div>
+
+          <!-- Responsive 2-column Date & Time Grid -->
+          <div class="grid-2-col">
+            <div class="form-group">
+              <label for="travelDate" class="form-label">Travel Date *</label>
+              <input type="date" id="travelDate" th:field="*{travelDate}" class="form-control" required>
+              <div th:if="${#fields.hasErrors('travelDate')}" th:errors="*{travelDate}" class="text-danger"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="travelTime" class="form-label">Travel Time *</label>
+              <input type="time" id="travelTime" th:field="*{travelTime}" class="form-control" required>
+              <!-- Quick Time Preset Pills -->
+              <div class="time-pills">
+                <button type="button" class="time-pill-btn" onclick="setQuickTime(15)">+15 min</button>
+                <button type="button" class="time-pill-btn" onclick="setQuickTime(30)">+30 min</button>
+                <button type="button" class="time-pill-btn" onclick="setQuickTime(60)">+1 hour</button>
+              </div>
+              <div th:if="${#fields.hasErrors('travelTime')}" th:errors="*{travelTime}" class="text-danger"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Additional Trip Notes / Special Needs</label>
+            <textarea id="description" th:field="*{description}" class="form-control" rows="3" 
+                      placeholder="e.g. Ramp access needed, luggage assistance, escorting to 2nd floor lecture hall."></textarea>
+            <small class="form-text">Optional details to assist your assigned helper in preparing for the trip.</small>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; min-width: 200px;">
+              <span>Submit Request</span>
+              <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+            <a th:href="@{/dashboard}" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      const dateInput = document.getElementById('travelDate');
+      if (dateInput) {
+        dateInput.min = today;
+        if (!dateInput.value) {
+          dateInput.value = today;
+        }
+      }
+      
+      const timeInput = document.getElementById('travelTime');
+      if (timeInput && !timeInput.value) {
+        setQuickTime(30); // Default to 30 mins ahead
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Access Denied')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 580px; text-align: center; padding-top: 3rem;">
+
+      <div class="card glass-panel" style="padding: 3rem 2rem; border-top: 4px solid var(--danger-text); box-shadow: var(--shadow-md);">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🛡️ 403</div>
+        <h2>Access Restricted</h2>
+        <p style="color: var(--text-secondary); margin: 1rem 0 2rem; font-size: 1.05rem; line-height: 1.6;">
+          You do not have the required permissions or role privileges to view this campus resource. 
+          Staff and Administrative portals require elevated authorization.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}" class="btn btn-primary">Admin Center</a>
+          <a sec:authorize="hasRole('STAFF')" th:href="@{/staff/dashboard}" class="btn btn-primary">Staff Portal</a>
+          <a sec:authorize="hasRole('USER')" th:href="@{/dashboard}" class="btn btn-primary">My Dashboard</a>
+          <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-primary">Sign In</a>
+          <a th:href="@{/}" class="btn btn-secondary">Return Home</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

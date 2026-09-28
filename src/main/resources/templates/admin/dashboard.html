@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Admin Dashboard')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <!-- Admin Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>System Administration Dashboard 👑</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+            Global system analytics, user access governance, and campus-wide transit metrics.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <a th:href="@{/admin/users}" class="btn btn-primary">Manage Users & Staff</a>
+          <a th:href="@{/staff/requests}" class="btn btn-secondary">All Requests</a>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--primary-light); color: var(--primary);">👥</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.totalUsers}">0</div>
+            <div class="stat-label">Registered Students</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--warning-light); color: var(--warning-text);">👔</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.totalStaff}">0</div>
+            <div class="stat-label">Staff Coordinators</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--info-light); color: var(--info-text);">🦽</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.totalHelpers}">0</div>
+            <div class="stat-label">Campus Helpers</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--success-light); color: var(--success-text);">📋</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.totalRequests}">0</div>
+            <div class="stat-label">Total Assistance Requests</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--warning-light); color: var(--warning-text);">⏳</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.requestedCount}">0</div>
+            <div class="stat-label">Pending Requests</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--info-light); color: var(--info-text);">🚀</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.assignedCount}">0</div>
+            <div class="stat-label">Assigned Trips</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--success-light); color: var(--success-text);">✅</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.completedCount}">0</div>
+            <div class="stat-label">Completed Trips</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--danger-light); color: var(--danger-text);">🚫</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.cancelledCount}">0</div>
+            <div class="stat-label">Cancelled Trips</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Users & Recent Requests Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem;">
+        
+        <!-- Recent Users Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Registered Users</h3>
+            <a th:href="@{/admin/users}" class="btn btn-secondary btn-sm">Manage All →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="u : ${recentUsers}">
+                  <td>
+                    <strong th:text="${u.fullName}">User Name</strong>
+                  </td>
+                  <td th:text="${u.email}">user@example.com</td>
+                  <td>
+                    <span th:if="${u.role.name() == 'ADMIN'}" class="role-tag role-admin">ADMIN</span>
+                    <span th:if="${u.role.name() == 'STAFF'}" class="role-tag role-staff">STAFF</span>
+                    <span th:if="${u.role.name() == 'USER'}" class="role-tag role-user">USER</span>
+                  </td>
+                  <td>
+                    <span th:if="${u.enabled}" class="badge badge-completed">ACTIVE</span>
+                    <span th:if="${!u.enabled}" class="badge badge-cancelled">DISABLED</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Assistance Bookings Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Bookings</h3>
+            <a th:href="@{/staff/requests}" class="btn btn-secondary btn-sm">All Bookings →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="r : ${recentRequests}">
+                  <td>#<strong th:text="${r.id}">1</strong></td>
+                  <td><span th:text="${r.assistanceType.displayName}">Wheelchair</span></td>
+                  <td th:text="${r.pickupPoint}">Hostel</td>
+                  <td th:text="${r.travelDate}">2026-10-01</td>
+                  <td>
+                    <span th:if="${r.status.name() == 'REQUESTED'}" class="badge badge-requested">REQ</span>
+                    <span th:if="${r.status.name() == 'ASSIGNED'}" class="badge badge-assigned">ASN</span>
+                    <span th:if="${r.status.name() == 'COMPLETED'}" class="badge badge-completed">CMP</span>
+                    <span th:if="${r.status.name() == 'CANCELLED'}" class="badge badge-cancelled">CAN</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

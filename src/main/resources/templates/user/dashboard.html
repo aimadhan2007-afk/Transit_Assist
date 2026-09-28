@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('User Dashboard')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <!-- Welcome Banner -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>Welcome, <span class="gradient-text" th:text="${currentUser.fullName}">User</span>! 👋</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+            Schedule assistance, track active campus helpers, and review past trips.
+          </p>
+        </div>
+        <div>
+          <a th:href="@{/requests/new}" class="btn btn-primary btn-lg glow-button">
+            <span>➕ Book Transit Assistance</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--primary-light); color: var(--primary);">📋</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.totalRequests}">0</div>
+            <div class="stat-label">Total Requests</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--status-requested-bg); color: var(--status-requested-text);">⏳</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.requestedCount}">0</div>
+            <div class="stat-label">Pending Staff Review</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--status-assigned-bg); color: var(--status-assigned-text);">🚀</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.assignedCount}">0</div>
+            <div class="stat-label">Assigned Helper</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color: var(--status-completed-bg); color: var(--status-completed-text);">✅</div>
+          <div class="stat-info">
+            <div class="stat-value" th:text="${stats.completedCount}">0</div>
+            <div class="stat-label">Completed Trips</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Requests Card -->
+      <div class="card glass-panel" style="padding: 0; overflow: hidden;">
+        <div class="card-header" style="padding: 1.25rem 1.75rem; margin-bottom: 0;">
+          <div>
+            <h3>Recent Assistance Bookings</h3>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Your latest transit trips across campus</span>
+          </div>
+          <a th:href="@{/requests/my}" class="btn btn-secondary btn-sm">View All Bookings →</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(recentRequests)}" style="text-align: center; padding: 3.5rem 1.5rem;">
+          <div style="font-size: 3rem; margin-bottom: 0.75rem;">🚍</div>
+          <h3>No assistance requests yet</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 420px; margin-left: auto; margin-right: auto;">
+            Need help navigating campus terrain, boarding shuttles, or finding lecture halls? Book your first trip now.
+          </p>
+          <a th:href="@{/requests/new}" class="btn btn-primary">Book Assistance Now</a>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(recentRequests)}" class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Assistance Type</th>
+                <th>Pickup Location</th>
+                <th>Travel Date</th>
+                <th>Time</th>
+                <th>Assigned Helper</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="req : ${recentRequests}">
+                <td style="font-weight: 700;">#<span th:text="${req.id}">1</span></td>
+                <td>
+                  <span th:text="${req.assistanceType.displayName}">Wheelchair Assistance</span>
+                </td>
+                <td th:text="${req.pickupPoint}">Main Hostel Block B</td>
+                <td th:text="${req.travelDate}">2026-10-01</td>
+                <td><strong th:text="${req.travelTime}">10:30</strong></td>
+                <td>
+                  <span th:if="${req.helper != null}" style="font-weight: 600; color: var(--primary);">
+                    👤 <span th:text="${req.helper.name}">John</span>
+                    <a th:if="${req.helper.phone != null}" th:href="'tel:' + ${req.helper.phone}" style="display: block; font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;" th:text="${req.helper.phone}">9876543211</a>
+                  </span>
+                  <span th:if="${req.helper == null}" style="color: var(--text-muted);">
+                    <em>Coordinating helper...</em>
+                  </span>
+                </td>
+                <td>
+                  <span th:if="${req.status.name() == 'REQUESTED'}" class="badge badge-requested">
+                    <span class="badge-dot"></span>
+                    <span>Requested</span>
+                  </span>
+                  <span th:if="${req.status.name() == 'ASSIGNED'}" class="badge badge-assigned">
+                    <span class="badge-dot"></span>
+                    <span>Assigned</span>
+                  </span>
+                  <span th:if="${req.status.name() == 'COMPLETED'}" class="badge badge-completed">
+                    <span class="badge-dot"></span>
+                    <span>Completed</span>
+                  </span>
+                  <span th:if="${req.status.name() == 'CANCELLED'}" class="badge badge-cancelled">
+                    <span class="badge-dot"></span>
+                    <span>Cancelled</span>
+                  </span>
+                </td>
+                <td>
+                  <div style="display: flex; gap: 0.4rem;">
+                    <a th:href="@{'/requests/' + ${req.id}}" class="btn btn-secondary btn-sm">Details</a>
+                    <form th:if="${req.status.name() == 'REQUESTED' || req.status.name() == 'ASSIGNED'}" 
+                          th:action="@{'/requests/' + ${req.id} + '/cancel'}" method="post" 
+                          onsubmit="return confirm('Are you sure you want to cancel this assistance request?');">
+                      <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

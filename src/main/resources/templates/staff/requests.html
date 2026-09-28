@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Staff Request Management')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>Staff Request Management</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+            Assign helpers, track operational statuses, and complete transit assistance trips.
+          </p>
+        </div>
+      </div>
+
+      <!-- Filters Form -->
+      <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+        <form th:action="@{/staff/requests}" method="get" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 180px;">
+            <label for="status" class="form-label" style="margin-bottom: 0.25rem;">Filter by Status</label>
+            <select id="status" name="status" class="form-select">
+              <option value="">All Statuses</option>
+              <option th:each="st : ${allStatuses}" 
+                      th:value="${st.name()}" 
+                      th:text="${st.name()}" 
+                      th:selected="${selectedStatus != null && selectedStatus.name() == st.name()}">
+                REQUESTED
+              </option>
+            </select>
+          </div>
+
+          <div style="flex: 1; min-width: 180px;">
+            <label for="date" class="form-label" style="margin-bottom: 0.25rem;">Filter by Travel Date</label>
+            <input type="date" id="date" name="date" class="form-control" th:value="${selectedDate}">
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a th:href="@{/staff/requests}" class="btn btn-secondary">Reset</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Requests Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div th:if="${#lists.isEmpty(requests)}" style="text-align: center; padding: 3rem 1rem;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+          <h4>No assistance requests match your criteria</h4>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">Try clearing your filters to see all requests.</p>
+          <a th:href="@{/staff/requests}" class="btn btn-secondary">Reset Filters</a>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(requests)}" class="table-responsive" style="border: none;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Requester</th>
+                <th>Assistance Type</th>
+                <th>Pickup Location</th>
+                <th>Travel Schedule</th>
+                <th>Assigned Helper</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="req : ${requests}">
+                <td style="font-weight: 700;">#<span th:text="${req.id}">1</span></td>
+                <td>
+                  <span style="font-weight: 600;" th:text="${req.user.fullName}">Madhan</span>
+                  <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">
+                    📞 <span th:text="${req.user.phone}">9876543210</span>
+                  </span>
+                </td>
+                <td><span th:text="${req.assistanceType.displayName}">Wheelchair Assistance</span></td>
+                <td th:text="${req.pickupPoint}">Main Hostel Block B</td>
+                <td>
+                  <span th:text="${req.travelDate}">2026-10-01</span> at <strong th:text="${req.travelTime}">10:30</strong>
+                </td>
+                <td>
+                  <span th:if="${req.helper != null}" style="font-weight: 600; color: var(--primary);">
+                    👤 <span th:text="${req.helper.name}">John</span>
+                  </span>
+                  <span th:if="${req.helper == null}" style="color: var(--text-muted);">
+                    <em>Unassigned</em>
+                  </span>
+                </td>
+                <td>
+                  <span th:if="${req.status.name() == 'REQUESTED'}" class="badge badge-requested">REQUESTED</span>
+                  <span th:if="${req.status.name() == 'ASSIGNED'}" class="badge badge-assigned">ASSIGNED</span>
+                  <span th:if="${req.status.name() == 'COMPLETED'}" class="badge badge-completed">COMPLETED</span>
+                  <span th:if="${req.status.name() == 'CANCELLED'}" class="badge badge-cancelled">CANCELLED</span>
+                </td>
+                <td>
+                  <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                    <a th:href="@{'/requests/' + ${req.id}}" class="btn btn-secondary btn-sm">Details</a>
+
+                    <!-- Assign Helper Trigger -->
+                    <button th:if="${req.status.name() == 'REQUESTED'}" 
+                            type="button" class="btn btn-primary btn-sm"
+                            th:onclick="'openAssignModal(' + ${req.id} + ')'">
+                      Assign
+                    </button>
+
+                    <!-- Mark Completed Action -->
+                    <form th:if="${req.status.name() == 'ASSIGNED'}" 
+                          th:action="@{'/staff/requests/' + ${req.id} + '/complete'}" method="post">
+                      <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Dynamic Assign Helper Modal -->
+  <div id="assignModal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 id="modalTitle">Assign Helper</h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('assignModal')">✕</button>
+      </div>
+
+      <form id="assignForm" method="post" action="">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div class="form-group">
+          <label for="helperSelect" class="form-label">Available Helper *</label>
+          <select id="helperSelect" name="helperId" class="form-select" required>
+            <option value="" disabled selected>-- Select an Available Helper --</option>
+            <option th:each="h : ${availableHelpers}" 
+                    th:value="${h.id}" 
+                    th:text="${h.name + ' (' + h.specialization + ' - ' + h.phone + ')'}">
+              John
+            </option>
+          </select>
+          <small class="form-text">Overlap rule: A helper cannot be assigned to overlapping requests within 60 minutes.</small>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('assignModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+  <script>
+    function openAssignModal(requestId) {
+      document.getElementById('modalTitle').innerText = 'Assign Helper to Request #' + requestId;
+      document.getElementById('assignForm').action = '/staff/requests/' + requestId + '/assign';
+      openModal('assignModal');
+    }
+  </script>
+
+</body>
+</html>

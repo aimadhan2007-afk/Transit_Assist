@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Helper Workload Schedule')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <!-- Header & Date Filter -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>Helper Workload Schedule 📅</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
+            Real-time daily schedule and trip assignments for all campus transit helpers.
+          </p>
+        </div>
+
+        <form th:action="@{/staff/helpers/workload}" method="get" style="display: flex; gap: 0.5rem; align-items: center;">
+          <label for="date" class="form-label" style="margin: 0; white-space: nowrap;">Date:</label>
+          <input type="date" id="date" name="date" class="form-control" th:value="${selectedDate}" onchange="this.form.submit()">
+          <a th:href="@{/staff/helpers/workload}" class="btn btn-secondary btn-sm">Today</a>
+        </form>
+      </div>
+
+      <!-- Workload Cards per Helper -->
+      <div th:if="${#lists.isEmpty(workload)}" style="text-align: center; padding: 3rem 1rem;">
+        <h4>No helpers found</h4>
+      </div>
+
+      <div th:each="w : ${workload}" class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 2.75rem; height: 2.75rem; border-radius: var(--radius-full); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+              👤
+            </div>
+            <div>
+              <h3 style="font-size: 1.2rem;">
+                <span th:text="${w.helperName}">John</span>
+              </h3>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">
+                📞 <a th:href="'tel:' + ${w.helperPhone}" style="color: var(--primary); text-decoration: underline;" th:text="${w.helperPhone}">9876543211</a> | Specialization: <span th:text="${w.specialization}">Wheelchair Assistance</span>
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 0.9rem; font-weight: 600;">
+              Assigned: <strong th:text="${w.assignedRequestsCount}">0</strong> request(s)
+            </span>
+            <span th:if="${w.availability.name() == 'AVAILABLE'}" class="badge badge-available">AVAILABLE</span>
+            <span th:if="${w.availability.name() == 'BUSY'}" class="badge badge-busy">BUSY</span>
+            <span th:if="${w.availability.name() == 'OFFLINE'}" class="badge badge-offline">OFFLINE</span>
+          </div>
+        </div>
+
+        <!-- Assignments list for this helper -->
+        <div th:if="${#lists.isEmpty(w.requests)}" style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+          <em>No transit assistance assignments scheduled for this date. Helper is available for new requests.</em>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(w.requests)}" class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Request ID</th>
+                <th>Trip Time</th>
+                <th>Pickup Location</th>
+                <th>Assistance Type</th>
+                <th>Requester</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${w.requests}">
+                <td style="font-weight: 700;">#<span th:text="${r.id}">1</span></td>
+                <td>
+                  ⏰ <strong th:text="${r.travelTime}">10:30</strong>
+                </td>
+                <td th:text="${r.pickupPoint}">Main Hostel Block B</td>
+                <td><span th:text="${r.assistanceType.displayName}">Wheelchair Assistance</span></td>
+                <td>
+                  <span th:text="${r.user.fullName}">Madhan</span>
+                  <span style="display: block; font-size: 0.75rem; color: var(--text-muted);" th:text="${r.user.phone}">9876543210</span>
+                </td>
+                <td>
+                  <span th:if="${r.status.name() == 'REQUESTED'}" class="badge badge-requested">REQUESTED</span>
+                  <span th:if="${r.status.name() == 'ASSIGNED'}" class="badge badge-assigned">ASSIGNED</span>
+                  <span th:if="${r.status.name() == 'COMPLETED'}" class="badge badge-completed">COMPLETED</span>
+                  <span th:if="${r.status.name() == 'CANCELLED'}" class="badge badge-cancelled">CANCELLED</span>
+                </td>
+                <td>
+                  <a th:href="@{'/requests/' + ${r.id}}" class="btn btn-secondary btn-sm">Details</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

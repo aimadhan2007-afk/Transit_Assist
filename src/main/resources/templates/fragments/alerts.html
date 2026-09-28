@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+  <div th:fragment="alerts" class="container alerts-container">
+    <!-- Success Alert (covers model attributes and ?logout=true) -->
+    <div th:if="${successMessage or param.logout}" class="alert alert-success glass-panel" role="alert">
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="alert-content" th:text="${successMessage != null ? successMessage : 'You have been signed out successfully.'}">Operation successful!</div>
+      <button type="button" class="alert-close" onclick="this.parentElement.remove()" aria-label="Dismiss alert">✕</button>
+    </div>
+
+    <!-- Error Alert (covers model attributes and ?error=true) -->
+    <div th:if="${errorMessage or param.error}" class="alert alert-danger glass-panel" role="alert">
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      </div>
+      <div class="alert-content" th:text="${errorMessage != null ? errorMessage : 'Invalid email or password. Please check your credentials and try again.'}">An error occurred!</div>
+      <button type="button" class="alert-close" onclick="this.parentElement.remove()" aria-label="Dismiss alert">✕</button>
+    </div>
+  </div>
+
+</body>
+</html>

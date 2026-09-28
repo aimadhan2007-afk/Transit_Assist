@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Accessible Campus Transit Assistance')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-pill">
+          <span>♿ Inclusive Campus Mobility Platform</span>
+        </div>
+        <h1>Accessible Transit Assistance,<br><span class="gradient-text">When You Need It.</span></h1>
+        <p>
+          TransitAssist empowers students and campus visitors with disabilities to book dedicated transit support in advance. 
+          Our coordinated staff and verified helpers ensure you navigate the campus safely, comfortably, and on schedule.
+        </p>
+
+        <div class="hero-actions">
+          <a sec:authorize="!isAuthenticated()" th:href="@{/register}" class="btn btn-primary btn-lg glow-button">
+            <span>Get Started</span>
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="btn btn-secondary btn-lg">Sign In</a>
+
+          <a sec:authorize="hasRole('USER')" th:href="@{/requests/new}" class="btn btn-primary btn-lg glow-button">
+            <span>➕ Request Assistance</span>
+          </a>
+          <a sec:authorize="hasRole('USER')" th:href="@{/dashboard}" class="btn btn-secondary btn-lg">My Dashboard</a>
+
+          <a sec:authorize="hasRole('STAFF')" th:href="@{/staff/dashboard}" class="btn btn-primary btn-lg">Staff Operations Portal</a>
+          <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}" class="btn btn-primary btn-lg">System Administration</a>
+        </div>
+      </section>
+
+      <!-- Key Service Features Grid -->
+      <section class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-box">🦽</div>
+          <h3>Wheelchair Assistance</h3>
+          <p>Trained campus assistants ready to provide safe mobility assistance from hostels to lecture halls and transit points.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🤝</div>
+          <h3>Escort Support</h3>
+          <p>Friendly visual and walking escorts for students and visitors navigating complex campus terrain and buildings.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🚐</div>
+          <h3>Shuttle Transit</h3>
+          <p>Seamless coordination and prioritized access to accessible campus shuttle buses and transit stations.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">📅</div>
+          <h3>Advance Booking</h3>
+          <p>Schedule your travel in advance by picking pickup locations, dates, and times with automated conflict detection.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">⚡</div>
+          <h3>Real-Time Tracking</h3>
+          <p>Track your trip progress effortlessly through REQUESTED, ASSIGNED, and COMPLETED operational milestones.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🛡️</div>
+          <h3>Verified Assistants</h3>
+          <p>All assistance is coordinated by staff with strict workload balance to eliminate delays and overlapping schedules.</p>
+        </div>
+      </section>
+
+      <!-- Campus Commitment Banner -->
+      <section class="card glass-panel" style="background: linear-gradient(135deg, var(--bg-surface), var(--bg-surface-elevated)); border-left: 4px solid var(--primary); padding: 2.25rem;">
+        <div style="display: flex; gap: 1.75rem; align-items: center; flex-wrap: wrap;">
+          <div style="width: 4rem; height: 4rem; border-radius: var(--radius-md); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+            🎓
+          </div>
+          <div style="flex: 1; min-width: 280px;">
+            <h3>Making Campus Navigation Dignified & Synchronized</h3>
+            <p style="color: var(--text-secondary); margin-top: 0.35rem; font-size: 1rem;">
+              No more informal coordination or last-minute uncertainty. TransitAssist brings reliability, 
+              advance helper scheduling, and strict conflict prevention to guarantee every trip is fulfilled.
+            </p>
+          </div>
+          <div>
+            <a th:href="@{/login}" class="btn btn-primary">Book Assistance Now</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

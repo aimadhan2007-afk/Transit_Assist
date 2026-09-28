@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Booking Details #' + ${requestItem.id})}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 820px;">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <a sec:authorize="hasRole('USER')" th:href="@{/requests/my}" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem;">
+          ← Back to My Bookings
+        </a>
+        <a sec:authorize="hasAnyRole('STAFF', 'ADMIN')" th:href="@{/staff/requests}" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem;">
+          ← Back to All Requests
+        </a>
+      </div>
+
+      <div class="card glass-panel" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+        <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem;">
+          <div>
+            <h2>Assistance Trip #<span th:text="${requestItem.id}">1</span></h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+              Booked on <span th:text="${#temporals.format(requestItem.createdAt, 'dd MMM yyyy, HH:mm')}">Date</span>
+            </span>
+          </div>
+
+          <div>
+            <span th:if="${requestItem.status.name() == 'REQUESTED'}" class="badge badge-requested">
+              <span class="badge-dot"></span><span>REQUESTED</span>
+            </span>
+            <span th:if="${requestItem.status.name() == 'ASSIGNED'}" class="badge badge-assigned">
+              <span class="badge-dot"></span><span>ASSIGNED</span>
+            </span>
+            <span th:if="${requestItem.status.name() == 'COMPLETED'}" class="badge badge-completed">
+              <span class="badge-dot"></span><span>COMPLETED</span>
+            </span>
+            <span th:if="${requestItem.status.name() == 'CANCELLED'}" class="badge badge-cancelled">
+              <span class="badge-dot"></span><span>CANCELLED</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- 3-Step Visual Progress Tracker -->
+        <div class="timeline" th:if="${requestItem.status.name() != 'CANCELLED'}">
+          <div th:class="'timeline-step ' + (${requestItem.status.name() == 'REQUESTED' || requestItem.status.name() == 'ASSIGNED' || requestItem.status.name() == 'COMPLETED'} ? (${requestItem.status.name() == 'REQUESTED' ? 'active' : 'completed'}) : '')">
+            <div class="timeline-circle">1</div>
+            <div class="timeline-label">Requested</div>
+          </div>
+          <div th:class="'timeline-step ' + (${requestItem.status.name() == 'ASSIGNED' || requestItem.status.name() == 'COMPLETED'} ? (${requestItem.status.name() == 'ASSIGNED' ? 'active' : 'completed'}) : '')">
+            <div class="timeline-circle">2</div>
+            <div class="timeline-label">Helper Assigned</div>
+          </div>
+          <div th:class="'timeline-step ' + (${requestItem.status.name() == 'COMPLETED'} ? 'active completed' : '')">
+            <div class="timeline-circle">3</div>
+            <div class="timeline-label">Trip Completed</div>
+          </div>
+        </div>
+
+        <div th:if="${requestItem.status.name() == 'CANCELLED'}" 
+             class="alert alert-danger" style="margin-top: 1.5rem;">
+          <div class="alert-icon">🚫</div>
+          <div class="alert-content">This transit assistance booking was <strong>CANCELLED</strong>. No further assignments can be made.</div>
+        </div>
+
+        <!-- Trip Details Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin: 2rem 0;">
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Assistance Type</div>
+            <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem;" th:text="${requestItem.assistanceType.displayName}">Wheelchair Assistance</div>
+          </div>
+
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Pickup Point</div>
+            <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem;" th:text="${requestItem.pickupPoint}">Main Hostel Block B</div>
+          </div>
+
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Trip Schedule</div>
+            <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem;">
+              📅 <span th:text="${requestItem.travelDate}">2026-10-01</span> at ⏰ <span th:text="${requestItem.travelTime}">10:30</span>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Requester</div>
+            <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem;" th:text="${requestItem.user.fullName}">Madhan</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" th:text="${requestItem.user.phone}">9876543210</div>
+          </div>
+        </div>
+
+        <!-- Assigned Helper Card -->
+        <div style="margin: 1.75rem 0; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium); background: var(--bg-surface-elevated);">
+          <h4 style="margin-bottom: 0.85rem;">Assigned Transit Assistant</h4>
+          <div th:if="${requestItem.helper != null}" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="width: 3.25rem; height: 3.25rem; border-radius: var(--radius-full); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                👤
+              </div>
+              <div>
+                <h3 style="font-size: 1.15rem;" th:text="${requestItem.helper.name}">John</h3>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  📞 <a th:href="'tel:' + ${requestItem.helper.phone}" style="font-weight: 600; text-decoration: underline;" th:text="${requestItem.helper.phone}">9876543211</a> | Expertise: <span th:text="${requestItem.helper.specialization}">Wheelchair Assistance</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <span th:if="${requestItem.helper.availability.name() == 'AVAILABLE'}" class="badge badge-available">AVAILABLE</span>
+              <span th:if="${requestItem.helper.availability.name() == 'BUSY'}" class="badge badge-busy">BUSY</span>
+            </div>
+          </div>
+
+          <div th:if="${requestItem.helper == null}" style="color: var(--text-muted); font-size: 0.95rem;">
+            <em>No helper assigned yet. A staff coordinator will review the booking and match an available assistant.</em>
+          </div>
+        </div>
+
+        <!-- Description Box -->
+        <div th:if="${requestItem.description != null && !requestItem.description.isEmpty()}" 
+             style="margin: 1.5rem 0; padding: 1.25rem; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">Special Notes</div>
+          <p th:text="${requestItem.description}">Description</p>
+        </div>
+
+        <!-- Actions Toolbar -->
+        <div style="display: flex; gap: 0.85rem; margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; flex-wrap: wrap;">
+          <form th:if="${requestItem.status.name() == 'REQUESTED' || requestItem.status.name() == 'ASSIGNED'}" 
+                th:action="@{'/requests/' + ${requestItem.id} + '/cancel'}" method="post"
+                onsubmit="return confirm('Are you sure you want to cancel this assistance request?');">
+            <button type="submit" class="btn btn-danger">Cancel Booking</button>
+          </form>
+
+          <form sec:authorize="hasAnyRole('STAFF', 'ADMIN')" 
+                th:if="${requestItem.status.name() == 'ASSIGNED'}" 
+                th:action="@{'/requests/' + ${requestItem.id} + '/complete'}" method="post">
+            <button type="submit" class="btn btn-success">✅ Mark Trip Completed</button>
+          </form>
+
+          <button sec:authorize="hasAnyRole('STAFF', 'ADMIN')" 
+                  th:if="${requestItem.status.name() == 'REQUESTED'}" 
+                  class="btn btn-primary" onclick="openModal('assignModal')">
+            👤 Assign Helper
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Assign Helper Modal -->
+  <div sec:authorize="hasAnyRole('STAFF', 'ADMIN')" id="assignModal" class="modal-overlay">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3>Assign Helper to Booking #<span th:text="${requestItem.id}">1</span></h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('assignModal')">✕</button>
+      </div>
+
+      <form th:action="@{'/staff/requests/' + ${requestItem.id} + '/assign'}" method="post">
+        <div class="form-group">
+          <label for="helperSelect" class="form-label">Available Helper *</label>
+          <select id="helperSelect" name="helperId" class="form-select" required>
+            <option value="" disabled selected>-- Select an Available Helper --</option>
+            <option th:each="h : ${availableHelpers}" 
+                    th:value="${h.id}" 
+                    th:text="${h.name + ' (' + h.specialization + ' - ' + h.phone + ')'}">
+              John
+            </option>
+          </select>
+          <small class="form-text">System strictly validates for overlapping assignments within the requested time.</small>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('assignModal')">Close</button>
+          <button type="submit" class="btn btn-primary">Confirm Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

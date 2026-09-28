@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Create Account')}"></head>
+<body>
+
+  <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 520px;">
+
+      <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+      <div class="card glass-panel" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <div class="brand-logo" style="margin: 0 auto 1.25rem; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-md);">
+            <svg class="icon-svg" style="width: 1.8rem; height: 1.8rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <line x1="20" y1="8" x2="20" y2="14"></line>
+              <line x1="23" y1="11" x2="17" y2="11"></line>
+            </svg>
+          </div>
+          <h2>Create Your Account</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.35rem;">
+            Register to schedule accessible transit assistance
+          </p>
+        </div>
+
+        <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+          <div class="form-group">
+            <label for="fullName" class="form-label">Full Name *</label>
+            <input type="text" id="fullName" th:field="*{fullName}" class="form-control" placeholder="e.g. Madhan Kumar" required>
+            <div th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address *</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="name@example.com" required>
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Contact Phone Number *</label>
+            <input type="tel" id="phone" th:field="*{phone}" class="form-control" placeholder="e.g. 9876543210" required>
+            <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password *</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Minimum 6 characters" required>
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirm Password *</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder="Re-enter password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;">
+            <span>Create Account</span>
+            <svg class="icon-svg-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; font-size: 0.925rem; color: var(--text-secondary);">
+          Already have an account? <a th:href="@{/login}" style="font-weight: 700;">Sign in here →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pwd = document.getElementById('password');
+      const confirmPwd = document.getElementById('confirmPassword');
+      const form = document.querySelector('form');
+      
+      form.addEventListener('submit', (e) => {
+        if (pwd.value !== confirmPwd.value) {
+          e.preventDefault();
+          confirmPwd.setCustomValidity("Passwords do not match!");
+          confirmPwd.reportValidity();
+        } else {
+          confirmPwd.setCustomValidity("");
+        }
+      });
+
+      confirmPwd.addEventListener('input', () => {
+        if (pwd.value === confirmPwd.value) {
+          confirmPwd.setCustomValidity("");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
