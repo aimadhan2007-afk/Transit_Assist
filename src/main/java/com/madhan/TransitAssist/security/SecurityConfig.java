@@ -54,7 +54,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Static resources & public pages
                 .requestMatchers(
-                    "/", "/index.html", "/login", "/register", "/access-denied",
+                    "/", "/index.html", "/login", "/register", "/access-denied", "/error",
                     "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico",
                     "/h2-console/**"
                 ).permitAll()

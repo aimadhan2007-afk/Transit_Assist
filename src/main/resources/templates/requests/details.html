@@ -20,7 +20,7 @@
         </a>
       </div>
 
-      <div class="card glass-panel" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+      <div class="card glass-panel card-padded" style="border-top: 4px solid var(--primary);">
         <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem;">
           <div>
             <h2>Assistance Trip #<span th:text="${requestItem.id}">1</span></h2>
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Trip Details Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin: 2rem 0;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 1.25rem; margin: 2rem 0;">
           <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
             <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Assistance Type</div>
             <div style="font-size: 1.1rem; font-weight: 700; margin-top: 0.4rem;" th:text="${requestItem.assistanceType.displayName}">Wheelchair Assistance</div>
@@ -97,7 +97,7 @@
         <div style="margin: 1.75rem 0; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium); background: var(--bg-surface-elevated);">
           <h4 style="margin-bottom: 0.85rem;">Assigned Transit Assistant</h4>
           <div th:if="${requestItem.helper != null}" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
               <div style="width: 3.25rem; height: 3.25rem; border-radius: var(--radius-full); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                 👤
               </div>

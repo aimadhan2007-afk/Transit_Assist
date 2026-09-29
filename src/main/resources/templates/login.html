@@ -10,7 +10,7 @@
 
       <div th:replace="~{fragments/alerts :: alerts}"></div>
 
-      <div class="card glass-panel" style="padding: 2.5rem; position: relative; overflow: hidden; border-top: 4px solid var(--primary);">
+      <div class="card glass-panel card-padded" style="position: relative; overflow: hidden; border-top: 4px solid var(--primary);">
         
         <div style="text-align: center; margin-bottom: 2rem;">
           <div class="brand-logo" style="margin: 0 auto 1.25rem; width: 3.5rem; height: 3.5rem; border-radius: var(--radius-md);">
@@ -45,30 +45,55 @@
         </form>
 
         <!-- Quick Demo Account Switcher -->
-        <div style="margin-top: 2rem; padding: 1.25rem; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em;">
-              ⚡ Quick Demo Personas (Click to Fill)
+        <div class="demo-personas-box">
+          <div class="demo-personas-header">
+            <span class="demo-personas-title">
+              <span>⚡</span> Quick Demo Personas (Click to Fill)
             </span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">One-click fill</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <button type="button" class="btn btn-secondary btn-sm" style="justify-content: space-between; text-align: left;"
-                    onclick="fillCredentials('admin@transitassist.com', 'Admin@123')">
-              <span>👑 <strong>ADMIN:</strong> admin@transitassist.com</span>
-              <span class="role-badge badge-admin">Admin@123</span>
+          <div class="demo-personas-list">
+            <!-- Admin Persona -->
+            <button type="button" class="demo-persona-card"
+                    onclick="fillCredentials('admin@transitassist.com', 'Admin@123')"
+                    title="Click to fill Admin credentials">
+              <div class="demo-persona-avatar badge-admin">👑</div>
+              <div class="demo-persona-info">
+                <div class="demo-persona-row">
+                  <span class="demo-persona-role">ADMIN</span>
+                  <span class="role-badge badge-admin">Admin@123</span>
+                </div>
+                <div class="demo-persona-email">admin@transitassist.com</div>
+              </div>
             </button>
 
-            <button type="button" class="btn btn-secondary btn-sm" style="justify-content: space-between; text-align: left;"
-                    onclick="fillCredentials('staff@transitassist.com', 'Staff@123')">
-              <span>👔 <strong>STAFF:</strong> staff@transitassist.com</span>
-              <span class="role-badge badge-staff">Staff@123</span>
+            <!-- Staff Persona -->
+            <button type="button" class="demo-persona-card"
+                    onclick="fillCredentials('staff@transitassist.com', 'Staff@123')"
+                    title="Click to fill Staff credentials">
+              <div class="demo-persona-avatar badge-staff">👔</div>
+              <div class="demo-persona-info">
+                <div class="demo-persona-row">
+                  <span class="demo-persona-role">STAFF</span>
+                  <span class="role-badge badge-staff">Staff@123</span>
+                </div>
+                <div class="demo-persona-email">staff@transitassist.com</div>
+              </div>
             </button>
 
-            <button type="button" class="btn btn-secondary btn-sm" style="justify-content: space-between; text-align: left;"
-                    onclick="fillCredentials('madhan@example.com', 'Password@123')">
-              <span>👤 <strong>USER:</strong> madhan@example.com</span>
-              <span class="role-badge badge-user">Password@123</span>
+            <!-- User Persona -->
+            <button type="button" class="demo-persona-card"
+                    onclick="fillCredentials('madhan@example.com', 'Password@123')"
+                    title="Click to fill Student/User credentials">
+              <div class="demo-persona-avatar badge-user">👤</div>
+              <div class="demo-persona-info">
+                <div class="demo-persona-row">
+                  <span class="demo-persona-role">USER</span>
+                  <span class="role-badge badge-user">Password@123</span>
+                </div>
+                <div class="demo-persona-email">madhan@example.com</div>
+              </div>
             </button>
           </div>
         </div>

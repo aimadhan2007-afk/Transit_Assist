@@ -20,10 +20,20 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
+@AutoConfigureMockMvc
 @ActiveProfiles("h2")
 @Transactional
 class TransitAssistApplicationTests {
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
     private UserService userService;
@@ -33,6 +43,14 @@ class TransitAssistApplicationTests {
 
     @Autowired
     private AssistanceRequestService requestService;
+
+    @Test
+    @DisplayName("Test /login endpoint")
+    void testLoginPage() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 
     @Test
     @DisplayName("Context Loads & Default Admin/Staff Accounts Initialized")

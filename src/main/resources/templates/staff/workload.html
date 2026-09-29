@@ -19,7 +19,7 @@
           </p>
         </div>
 
-        <form th:action="@{/staff/helpers/workload}" method="get" style="display: flex; gap: 0.5rem; align-items: center;">
+        <form th:action="@{/staff/helpers/workload}" method="get" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
           <label for="date" class="form-label" style="margin: 0; white-space: nowrap;">Date:</label>
           <input type="date" id="date" name="date" class="form-control" th:value="${selectedDate}" onchange="this.form.submit()">
           <a th:href="@{/staff/helpers/workload}" class="btn btn-secondary btn-sm">Today</a>
@@ -33,7 +33,7 @@
 
       <div th:each="w : ${workload}" class="card" style="margin-bottom: 1.5rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <div style="width: 2.75rem; height: 2.75rem; border-radius: var(--radius-full); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
               👤
             </div>

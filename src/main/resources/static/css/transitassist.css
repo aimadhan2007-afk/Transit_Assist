@@ -445,6 +445,120 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Quick Demo Personas Component */
+.demo-personas-box {
+  margin-top: 1.75rem;
+  padding: 1.15rem;
+  background: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-xs);
+}
+
+.demo-personas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.demo-personas-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.demo-personas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.demo-persona-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  font-family: inherit;
+  color: inherit;
+}
+
+.demo-persona-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+}
+
+.demo-persona-card:active {
+  transform: translateY(0);
+}
+
+.demo-persona-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.demo-persona-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.demo-persona-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.demo-persona-role {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.03em;
+}
+
+.demo-persona-email {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.demo-persona-card:hover .demo-persona-email {
+  color: var(--primary);
+}
+
+.demo-persona-card .role-badge {
+  flex-shrink: 0;
 }
 
 .badge-user, .role-user {
@@ -516,6 +630,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-decoration: none !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .btn-primary {
@@ -611,6 +727,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   margin-bottom: 1.5rem;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
   position: relative;
+  box-sizing: border-box;
+}
+
+.card-padded {
+  padding: 2.25rem;
 }
 
 .card:hover {
@@ -1318,6 +1439,24 @@ tr:hover td {
   .timeline-circle {
     margin: 0;
     flex-shrink: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .logout-btn span {
+    display: none;
+  }
+  .logout-btn {
+    padding: 0.42rem 0.6rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-padded {
+    padding: 1.25rem !important;
+  }
+  .modal-card {
+    padding: 1.25rem;
   }
 }
 
